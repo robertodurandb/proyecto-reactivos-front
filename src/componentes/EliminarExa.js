@@ -32,7 +32,7 @@ function EliminarExa(){
         fetch('http://10.1.22.203:9000/examen/' + pk, {
             method: 'DELETE',
             headers: {
-                'Authorization': 'Token ' + localStorage.getItem("token")
+                'Authorization': 'Token ' + sessionStorage.getItem("token")
             }           
         }).then((response) => {
             return response.json()     

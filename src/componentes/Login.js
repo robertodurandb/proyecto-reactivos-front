@@ -11,7 +11,7 @@ const [hashError, setHashError] = React.useState(false)
 const {loginCallback} = props
 
 function doLogin() {
-    fetch('http://10.1.22.203:9000/login', {
+    fetch('http://localhost:9000/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -23,14 +23,14 @@ function doLogin() {
     }).then ((response) => {
         console.log(response.status)
         if (response.status == 401){
-            setHashError(true)
+            setHashError(true)  
         }else{
             return response.json()
             setHashError(false)
         }
         
     }).then((data) =>{
-        localStorage.setItem("token", data.token)
+        sessionStorage.setItem("token", data.token)
         loginCallback()
     })
 }
@@ -52,8 +52,8 @@ function handlePasswordChanged (event) {
                     <input placeholder='Username' className="form-control" id="exampleInputPassword1" value={username} onChange={handleUsernameChanged}/>
                     <input placeholder='Password' type='password' className="form-control" id="exampleInputPassword1" value={password} onChange={handlePasswordChanged}/>
                     { hashError ? (
-                    <div>A ocurrido un error</div>
-                    ) : 
+                        <div>Usuario o Password incorrectos</div>
+                    ) :
                     null}
                 </div>
                 <div className='text-center'>

@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 function AgregarExa(){
     const [listaEstados, setListaEstados] = React.useState([])
-    const [idEstado, setIdEstado] = React.useState()
 
     const [newCodigo, setNewCodigo] = React.useState("")
     const [newName, setNewName] = React.useState("")
@@ -11,12 +10,15 @@ function AgregarExa(){
     const [newTipo, setNewTipo] = React.useState()
     const [newEstado, setNewEstado] = React.useState()
 
+    const [hashError, setHashError] = React.useState(false)
+    const [hashOk, setHashOk] = React.useState(false)
+
     function addExamen() {
-        fetch('http://10.1.22.203:9000/examen', {
+        fetch('http://localhost:9000/examen', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + localStorage.getItem("token")
+                'Authorization': 'Token ' + sessionStorage.getItem("token")
             },
             body: JSON.stringify({
                 codexamen: newCodigo,
@@ -26,29 +28,27 @@ function AgregarExa(){
                 estado: newEstado
             })
         }).then((response) => {
-            return response.json()
+            console.log(response.status)
+            if (response.status == 401) {
+                setHashError(true)
+            } else {
+                setHashOk(true)
+                setHashError(false)
+                return response.json()        
+            }
         }).then((data)=>{
-        
+        console.log("examen agregado")
         })
     }
 
     function getEstados(){
-        fetch('http://10.1.22.203:9000/estados')
+        fetch('http://localhost:9000/estados')
             .then(response => response.json())
             .then(data => setListaEstados(data))
     }
     useEffect(() =>{
         getEstados()
     }, [])
-
-    function getEstadoForId(pk){
-        fetch('http://10.1.22.203:9000/estado/' + pk, {
-            method: 'GET'
-        })
-            .then(response => response.json())
-            .then(data => setIdEstado(data))
-            
-    }
 
     function handleNewCodigo(event) {
         setNewCodigo(event.target.value)
@@ -70,6 +70,14 @@ function AgregarExa(){
 
     return (
         <div className='container'>
+            {
+                hashError ? (
+                    <div>A ocurrido un error, cierra y vuelva a iniciar sesión</div>
+                ) : hashOk ? (
+                    <div>¡¡Examen agregado Correctamente!!</div>
+                ) :
+                    null
+            }
             <h1>Agregar Examenes de Laboratorio</h1>
             <div className='container-md'>
                 <h4>Nuevo Examen:</h4>
@@ -91,7 +99,7 @@ function AgregarExa(){
                 </div>
                 <div className='mb-3'>
                     <label for='estado' className='form-label'>Estado: </label>
-                    <select id='estado' defaultValue={idEstado} className='form-select' value={idEstado} onChange={handleNewEstado}>
+                    <select id='estado' className='form-select' onChange={handleNewEstado}>
                     { listaEstados.map((estado)=>{
                         return(
                             <>
@@ -100,7 +108,6 @@ function AgregarExa(){
                         )
                     })}
                 </select>
-                    {/* <input id="estado" className='form-control' value={newEstado} onChange={handleNewEstado}/> */}
                 </div>
                  <br/>
                     <button type='submit' className='btn btn-primary' onClick={addExamen}>Agregar</button>

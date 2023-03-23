@@ -4,7 +4,6 @@ import ListaExa from './componentes/ListaExa'
 import AgregarExa from './componentes/AgregarExa'
 import Principal from './componentes/Principal'
 import EliminarExa from './componentes/EliminarExa2';
-import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import {
   BrowserRouter as Router,
@@ -21,7 +20,7 @@ function App() {
   const [logged, setLogged] = React.useState(false)
 
   function checkLogin() {
-    let token = localStorage.getItem('token')
+    let token = sessionStorage.getItem('token')
     if (token) {
       setLogged(true)
     } else {
@@ -35,7 +34,7 @@ function App() {
 
   function signOut() {
 
-    localStorage.removeItem("token")
+    sessionStorage.removeItem("token")
     checkLogin()
   }
 

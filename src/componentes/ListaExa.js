@@ -5,14 +5,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 function ListaExa(){
     const [listaExa, setListaExa] = React.useState([])
 
-    
-
     function getExam(){
-        fetch('http://10.1.22.203:9000/examenes')
+        fetch('http://localhost:9000/examenes')
             .then(response => response.json())
             .then(data => setListaExa(data))
     }
-
     useEffect(() =>{
         getExam()
     }, [])
