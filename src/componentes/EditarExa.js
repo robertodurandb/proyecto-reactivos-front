@@ -1,30 +1,42 @@
 import React, { useEffect } from 'react'
 import '../estilos/style.css'
-// import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
-function EliminarExa2(){
+function EditarExa(){
     const [listaExa, setListaExa] = React.useState([])
     const [modalInsertar, setModalInsertar] = React.useState(false)
+    const [listaEstados, setListaEstados] = React.useState([])
     //para ingresar datos:
     const [newCodigo, setNewCodigo] = React.useState("")
     const [newName, setNewName] = React.useState("")
     const [newArea, setNewArea] = React.useState()
     const [newTipo, setNewTipo] = React.useState()
-    const [newEstado, setNewEstado] = React.useState()
+    const [newEstado, setNewEstado] = React.useState(2)
     
     const ventanaModal = () => setModalInsertar(!modalInsertar)
+
     //******************** OBTENER LISTA DE EXAMENES *************/
     function getExam(){
         fetch('http://localhost:9000/examenes')
             .then(response => response.json())
             .then(data => setListaExa(data))
     }
+    function getEstados(){
+        fetch('http://localhost:9000/estados')
+            .then(response => response.json())
+            .then(data => setListaEstados(data))
+    }
+    function limpiarModal(){
+        setNewCodigo('')
+        setNewName('')
+        setNewArea()
+        setNewTipo()
+       
+    }
  
     //-------AGREGANDO EXAMEN CON FETCH Y ASYNC
     const agregarExamen = async() => {
-        
         await fetch('http://localhost:9000/examen', {
                     method: 'POST',
                     headers: {
@@ -41,18 +53,16 @@ function EliminarExa2(){
                 })
             .then(({ data })=> {
                 getExam();
-                ventanaModal()       
+                ventanaModal()           
             })
         .catch(({ data })=> toast.error(data));
-        // if (toast.error==true) {
-        //     console.log("fallo")
-        // } else {
-        //     console.log("perfect")
-        // }
+    }
+    function ventanaModalAbrir() {
+        limpiarModal()
+        ventanaModal()
     }
 
         //AGREGAR EXAMENES
-
         function handleNewCodigo(event) {
             setNewCodigo(event.target.value)
         }
@@ -66,26 +76,17 @@ function EliminarExa2(){
             setNewTipo(event.target.value)
         }
         function handleNewEstado(event) {
-            setNewEstado(event.target.value)
+            const estado = event.target.value
+            if (estado="disponible") {
+                setNewEstado(1)
+            }else if(estado="agotado"){
+                setNewEstado(2)
+            } 
         }
     
     
-    // -----------------ELIMINAR CON FETCH
-    // function deleteExam(pk){
-    //     fetch('http://localhost:9000/examen/' + pk, {
-    //         method: 'DELETE',
-    //         headers: {
-    //             'Authorization': 'Token ' + sessionStorage.getItem("token")
-    //         }           
-    //     }).then((response) => {
-    //         return response.json()     
-    //     }).then((data) => {
-    //         getExam()
-    //         console.log("examen eliminado")
-    //     })
-    // }
-    
-    // ------------------ELIMINAR CON AXIOS
+    // -----------------ELIMINAR CON FETCH Y ASYNC
+
     const handleDelete = async(id) => {
 
             fetch('http://localhost:9000/examen/' + id, { 
@@ -100,16 +101,17 @@ function EliminarExa2(){
     
         useEffect(() =>{
             getExam()
+            getEstados()
         }, []) 
       
       
     
     return (
         <div className="contenedorprincipal">
-            <h1>Eliminacion de exámenes de Laboratorio</h1>
+            <h1>Editar exámenes de Laboratorio</h1>
             <div className="container text-start">
                 <br/>
-                <button className='btn btn-success' onClick={ventanaModal}>Agregar Examen</button>
+                <button className='btn btn-success' onClick={ventanaModalAbrir}>Agregar Examen</button>
                 <div className='contenedorelimina'>
                     <div className='partep'>CODIGO</div>
                     <div className='partep'>EXAMEN</div>
@@ -127,7 +129,7 @@ function EliminarExa2(){
                                 <div className='parte'>{examen.nametipo}</div> 
                                 <div className='parte'>{examen.nameestado}</div>
                                 <div className='parte'><button type="button" className="btn btn-outline-danger" onClick={e => {handleDelete(examen.idexamen)}}>X</button>
-                                &nbsp;&nbsp;<button type="button" className="btn btn-outline-success">Editar</button>
+                                &nbsp;&nbsp;<button type="button" className="btn btn-outline-success" onClick={ventanaModal}>Editar</button>
                                 </div>
                             </div>
                         )
@@ -157,18 +159,29 @@ function EliminarExa2(){
                 </div>
                 <div className='mb-3'>
                     <label for='estado' className='form-label'>Estado: </label>
-                    <input id='estado' className='form-control' type='number' name='estado' value={newEstado} onChange={handleNewEstado}/>
+                    {/* <input id='estado' className='form-control' type='number' name='estado' value={newEstado} onChange={handleNewEstado}/> */}
+                    <select id='estado' className='form-select' name='estado' value={newEstado} onChange={handleNewEstado}>
+                    { listaEstados.map((estado)=>{
+                        return(
+                            <>
+                                <option >{estado.nameestado}</option>
+                            </>
+                        )
+                    })}
+                </select>
                 </div>
+
             </div>
                 </ModalBody>
                 <ModalFooter>
                     <button type='submit' className='btn btn-primary' onClick={agregarExamen}>Agregar</button>
                     <button className='btn btn-danger' onClick={ventanaModal}>Cancelar</button>
                 </ModalFooter>
+            
             </Modal>
         </div>
 
     )
 }
 
-export default EliminarExa2;
+export default EditarExa;

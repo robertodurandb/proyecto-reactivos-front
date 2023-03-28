@@ -1,9 +1,8 @@
 
 import Login from './componentes/Login';
 import ListaExa from './componentes/ListaExa'
-import AgregarExa from './componentes/AgregarExa'
 import Principal from './componentes/Principal'
-import EliminarExa from './componentes/EliminarExa2';
+import EditarExa from './componentes/EditarExa';
 import 'bootstrap/dist/css/bootstrap.css';
 import {
   BrowserRouter as Router,
@@ -51,11 +50,8 @@ function App() {
                 <Link to="/listar" className="btn btn-dark">
                   Listar
                 </Link>
-                <Link to="/agregar" className="btn btn-dark">
-                  Agregar
-                </Link>
-                <Link to="/eliminar" className="btn btn-dark">
-                  Eliminar
+                <Link to="/editar" className="btn btn-dark">
+                  Editar
                 </Link>
                 <button onClick={signOut}>Cerrar Sesion</button>
               </div>
@@ -64,10 +60,7 @@ function App() {
                 <Route path="/listar" element={<ListaExa logoutCallback={checkLogin} />} />
             </Routes>
               <Routes>
-                <Route path="/agregar" element={<AgregarExa />} />
-              </Routes>
-              <Routes>
-                <Route path="/eliminar" element={<EliminarExa />} />
+                <Route path="/editar" element={<EditarExa />} />
               </Routes>
               <Routes>
                 <Route path="/" element={<Principal />} />

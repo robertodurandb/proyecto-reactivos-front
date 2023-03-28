@@ -22,6 +22,7 @@ function ListaExa(){
                     <div className='partep'>CODIGO</div>
                     <div className='partep'>EXAMEN</div>
                     <div className='partep'>AREA</div>
+                    <div className='partep'>TIPO</div>
                     <div className='partep'>STOCK</div>
                 </div>
                     { listaExa.map((examen)=>{
@@ -30,6 +31,7 @@ function ListaExa(){
                                 <div className='parte'>{examen.codexamen}</div>
                                 <div className='parte'>{examen.nameexamen}</div>
                                 <div className='parte'>{examen.namearea}</div>
+                                <div className='parte'>{examen.nametipo}</div>
                                 <div className='parte'>{examen.nameestado}</div>
                             </div>
                         )
