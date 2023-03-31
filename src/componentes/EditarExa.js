@@ -12,7 +12,8 @@ function EditarExa(){
     const [newName, setNewName] = React.useState("")
     const [newArea, setNewArea] = React.useState()
     const [newTipo, setNewTipo] = React.useState()
-    const [newEstado, setNewEstado] = React.useState(2)
+    const [newEstado, setNewEstado] = React.useState('disponible')
+    const [newEstado2, setNewEstado2] = React.useState('2')
     
     const ventanaModal = () => setModalInsertar(!modalInsertar)
 
@@ -34,10 +35,11 @@ function EditarExa(){
         setNewTipo()
        
     }
- 
+    
     //-------AGREGANDO EXAMEN CON FETCH Y ASYNC
     const agregarExamen = async() => {
-        await fetch('http://localhost:9000/examen', {
+        await 
+        fetch('http://localhost:9000/examen', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -48,7 +50,7 @@ function EditarExa(){
                         nameexamen: newName,
                         area_idarea: newArea,
                         tipomuestra_idtipomuestra: newTipo,
-                        estado: newEstado
+                        estado: newEstado2
                     })
                 })
             .then(({ data })=> {
@@ -73,16 +75,22 @@ function EditarExa(){
             setNewArea(event.target.value)
         }
         function handleNewTipo(event) {
-            setNewTipo(event.target.value)
+            setNewTipo(event.target.value)            
         }
-        function handleNewEstado(event) {
-            const estado = event.target.value
-            if (estado="disponible") {
-                setNewEstado(1)
-            }else if(estado="agotado"){
-                setNewEstado(2)
-            } 
+
+        function handleNewEstado(event) {  
+            setNewEstado(event.target.value)
+            let id = '0'
+            if(event.target.value=="agotado"){        
+                id = '1'
+                setNewEstado2(id)
+            }else if(event.target.value=="disponible"){
+                id = '2'
+                setNewEstado2(id)
+            }  
         }
+        
+        
     
     
     // -----------------ELIMINAR CON FETCH Y ASYNC
