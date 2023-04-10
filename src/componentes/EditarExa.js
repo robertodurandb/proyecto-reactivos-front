@@ -7,11 +7,15 @@ function EditarExa(){
     const [listaExa, setListaExa] = React.useState([])
     const [modalInsertar, setModalInsertar] = React.useState(false)
     const [listaEstados, setListaEstados] = React.useState([])
+    const [listaTipos, setListaTipos] = React.useState([])
+    const [listaAreas, setListaAreas] = React.useState([])
     //para ingresar datos:
     const [newCodigo, setNewCodigo] = React.useState("")
     const [newName, setNewName] = React.useState("")
-    const [newArea, setNewArea] = React.useState()
-    const [newTipo, setNewTipo] = React.useState()
+    const [newArea, setNewArea] = React.useState('Bioquimica')
+    const [newArea2, setNewArea2] = React.useState('1')
+    const [newTipo, setNewTipo] = React.useState('Suero')
+    const [newTipo2, setNewTipo2] = React.useState('1')
     const [newEstado, setNewEstado] = React.useState('disponible')
     const [newEstado2, setNewEstado2] = React.useState('2')
     
@@ -28,12 +32,25 @@ function EditarExa(){
             .then(response => response.json())
             .then(data => setListaEstados(data))
     }
+    function getTipoMuestras(){
+        fetch('http://localhost:9000/tipomuestras')
+            .then(response => response.json())
+            .then(data => setListaTipos(data))
+    }
+    function getAreas(){
+        fetch('http://localhost:9000/areas')
+            .then(response => response.json())
+            .then(data => setListaAreas(data))
+    }
     function limpiarModal(){
         setNewCodigo('')
         setNewName('')
-        setNewArea()
-        setNewTipo()
-       
+        setNewArea('Bioquimica')
+        setNewArea2('1')
+        setNewTipo('Suero')
+        setNewTipo2('1')
+        setNewEstado('disponible')
+        setNewEstado2('2')
     }
     
     //-------AGREGANDO EXAMEN CON FETCH Y ASYNC
@@ -48,8 +65,8 @@ function EditarExa(){
                     body: JSON.stringify({
                         codexamen: newCodigo,
                         nameexamen: newName,
-                        area_idarea: newArea,
-                        tipomuestra_idtipomuestra: newTipo,
+                        area_idarea: newArea2,
+                        tipomuestra_idtipomuestra: newTipo2,
                         estado: newEstado2
                     })
                 })
@@ -73,18 +90,64 @@ function EditarExa(){
         }
         function handleNewArea(event) {
             setNewArea(event.target.value)
+            let idarea = '0'
+            if (event.target.value==='Bioquimica') {
+                idarea = '1'
+                setNewArea2(idarea)
+            }else if(event.target.value==='Hematologia'){
+                idarea = '2'
+                setNewArea2(idarea)
+            }else if(event.target.value==='Inmunologia'){
+                idarea = '3'
+                setNewArea2(idarea)
+            }else if(event.target.value==='Coagulacion'){
+                idarea = '4'
+                setNewArea2(idarea)
+            }else if(event.target.value==='Hormonas'){
+                idarea = '6'
+                setNewArea2(idarea)
+            }else if(event.target.value==='Citometria de Flujo'){
+                idarea = '7'
+                setNewArea2(idarea)
+            }else if(event.target.value==='Medicina Transfusional'){
+                idarea = '8'
+                setNewArea2(idarea)
+            }else if(event.target.value==='Banco de Organos'){
+                idarea = '9'
+                setNewArea2(idarea)
+            }
         }
         function handleNewTipo(event) {
-            setNewTipo(event.target.value)            
+            setNewTipo(event.target.value)
+            let idtipo = '0'
+            if (event.target.value==="Suero") {
+                idtipo = '1'
+                setNewTipo2(idtipo)
+            }if(event.target.value==="Orina simple") {
+                idtipo = '2'
+                setNewTipo2(idtipo)
+            }if(event.target.value==="Sangre Total") {
+                idtipo = '3'
+                setNewTipo2(idtipo)
+            }if(event.target.value==="Sangre EDTA") {
+                idtipo = '4'
+                setNewTipo2(idtipo)
+            }if(event.target.value==="Orina 24hrs") {
+                idtipo = '5'
+                setNewTipo2(idtipo)
+            }if(event.target.value==="Plasma Citrato") {
+                idtipo = '6'
+                setNewTipo2(idtipo)
+            }
         }
 
         function handleNewEstado(event) {  
             setNewEstado(event.target.value)
             let id = '0'
-            if(event.target.value=="agotado"){        
+            if(event.target.value==="agotado"){        
                 id = '1'
                 setNewEstado2(id)
-            }else if(event.target.value=="disponible"){
+            }else if(event.target.value==="disponible"){
                 id = '2'
                 setNewEstado2(id)
             }  
@@ -110,6 +173,8 @@ function EditarExa(){
         useEffect(() =>{
             getExam()
             getEstados()
+            getTipoMuestras()
+            getAreas()
         }, []) 
       
       
@@ -159,15 +224,32 @@ function EditarExa(){
                 </div>
                 <div className='mb-3'>
                     <label for='area' className='form-label'>Area: </label>
-                    <input id="area" className='form-control' type='number' name='area' value={newArea} onChange={handleNewArea}/>
+                    {/* <input id="area" className='form-control' type='number' name='area' value={newArea} onChange={handleNewArea}/> */}
+                    <select id='area' className='form-select' name='area' value={newArea} onChange={handleNewArea}>
+                    { listaAreas.map((area)=>{
+                        return(
+                            <>
+                                <option >{area.namearea}</option>
+                            </>
+                        )
+                    })}
+                </select>
                 </div>
                 <div className='mb-3'>
                     <label for='tipo' className='form-label'>Tipo de muestra: </label>
-                    <input id="tipo" className='form-control' type='number' name='tipo' value={newTipo} onChange={handleNewTipo}/>
+                    {/* <input id="tipo" className='form-control' type='number' name='tipo' value={newTipo} onChange={handleNewTipo}/> */}
+                    <select id='tipo' className='form-select' name='tipo' value={newTipo} onChange={handleNewTipo}>
+                    { listaTipos.map((tipomuestra)=>{
+                        return(
+                            <>
+                                <option >{tipomuestra.nametipo}</option>
+                            </>
+                        )
+                    })}
+                </select>
                 </div>
                 <div className='mb-3'>
                     <label for='estado' className='form-label'>Estado: </label>
-                    {/* <input id='estado' className='form-control' type='number' name='estado' value={newEstado} onChange={handleNewEstado}/> */}
                     <select id='estado' className='form-select' name='estado' value={newEstado} onChange={handleNewEstado}>
                     { listaEstados.map((estado)=>{
                         return(
